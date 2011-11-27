@@ -19,7 +19,7 @@ module Paypal
       }
       attr_accessor *@@attribute_mapping.values
       attr_accessor :shipping_options_is_default, :success_page_redirect_requested, :insurance_option_selected
-      attr_accessor :amount, :description, :ship_to, :payer, :recurring, :billing_agreement, :refund
+      attr_accessor :amount, :description, :ship_to, :payer, :billing_info, :recurring, :billing_agreement, :refund
       attr_accessor :payment_responses, :payment_info, :items
 
       def initialize(attributes = {})
@@ -60,6 +60,19 @@ module Paypal
             :last_name => attrs.delete(:LASTNAME),
             :email => attrs.delete(:EMAIL)
           )
+        end
+        if attrs[:BILLINGNAME]
+          @billing_info = Payment::Response::BillingInfo.new(
+            :name  => attrs.delete(:BILLINGNAME),
+            :street  => attrs.delete(:STREET),
+            :city  => attrs.delete(:CITY),
+            :state  => attrs.delete(:STATE),
+            :zip  => attrs.delete(:ZIP),
+            :country  => attrs.delete(:COUNTRY),
+            :countryname  => attrs.delete(:COUNTRYNAME),
+            :address_id  => attrs.delete(:ADDRESSID)
+          )
+          Paypal.log @billing
         end
         if attrs[:PROFILEID]
           @recurring = Payment::Recurring.new(
