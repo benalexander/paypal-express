@@ -13,6 +13,10 @@ module Paypal
           params[:REQCONFIRMSHIPPING] = 0
           params[:NOSHIPPING] = 1
         end
+        if options[:request_billing_address]
+          params[:REQBILLINGADDRESS] = 1
+          params[:SOLUTIONTYPE] = "Mark"
+        end
         Array(payment_requests).each_with_index do |payment_request, index|
           params.merge! payment_request.to_params(index)
         end
